@@ -33,12 +33,14 @@ if ($due_date == '') {
   $errors ['due_date'] = '期限を入力してください';
 }
 
+
 if (empty($errors)) {
   $sql = "insert into plans (title, due_date, created_at,   updated_at) values (:title,  :due_date, now(), now())";
 $stmt = $dbh->prepare($sql);
 $stmt->bindParam(":title", $title);
 $stmt->bindParam(":due_date", $due_date);
 $stmt->execute();
+
 header('Location: index.php');
 exit;
 }
@@ -63,18 +65,32 @@ exit;
       期限日:<input type="date" name="due_date">
       <input type="submit" value="追加"><br>
       <span style="color:red">
-        <?php echo h($errors['title']) ?></span>
+      <?php if ($errors) : ?>
+        <ul>
+          <?php foreach ($errors as $error) : ?>
+            <li>
+              <?php echo h($error); ?>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+      <?php endif; ?>
+      </span>
     </form>
   </p>
 
   <h2>未達成</h2>
   <ul>
     <?php foreach ($notyet_plans as $plan) : ?>
-    <li>
+    <!-- <li> -->
+      <?php if (date('Y-m-d') >= $plan['due_date']) : ?>
+        <li class="expired">
+      <?php else : ?>
+        <li>
+      <?php endif; ?>
       <a href="done.php?id=<?php echo h($plan['id']) ;?>">[完了]</a>
       <a href="edit.php?id=<?php echo h($plan['id']); ?>">[編集]</a>
       <?php echo h($plan['title']); ?>
-      <?php echo '・・・完了期限:' .  h(date('Y/m/d', strtotime($plan['date']))); ?>
+      <?php echo '・・・完了期限:' .  h(date('Y/m/d', strtotime($plan['due_date']))); ?>
     </li>
     <?php endforeach; ?>
   </ul>
