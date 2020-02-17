@@ -8,7 +8,7 @@ $dbh = connectDb();
 
 
 // レコードの取得(未完了の場合)
-$sql = "select * from plans where status = 'notyet'";
+$sql = "select * from plans where status = 'notyet' order by due_date asc";
 $stmt = $dbh->prepare($sql);
 $stmt->execute();
 $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
