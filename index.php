@@ -14,7 +14,7 @@ $stmt->execute();
 $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // レコードの取得(完成の場合)
-$sql2 = "select * from plans where status = 'done'";
+$sql2 = "select * from plans where status = 'done' order by due_date asc";
 $stmt = $dbh->prepare($sql2);
 $stmt->execute();
 $done_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
