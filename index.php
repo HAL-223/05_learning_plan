@@ -71,7 +71,7 @@ if (empty($errors)) {
             <li>
               <?php echo h($error); ?>
             </li>
-            <?php endforeach; ?>
+          <?php endforeach; ?>
         </ul>
       <?php endif; ?>
       </span>
