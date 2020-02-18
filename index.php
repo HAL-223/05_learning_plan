@@ -8,13 +8,13 @@ $dbh = connectDb();
 
 
 // レコードの取得(未完了の場合)
-$sql = "select * from plans where status = 'notyet'";
+$sql = "select * from plans where status = 'notyet' order by due_date asc";
 $stmt = $dbh->prepare($sql);
 $stmt->execute();
 $notyet_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // レコードの取得(完成の場合)
-$sql2 = "select * from plans where status = 'done'";
+$sql2 = "select * from plans where status = 'done' order by due_date desc";
 $stmt = $dbh->prepare($sql2);
 $stmt->execute();
 $done_plans = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -36,14 +36,14 @@ if ($due_date == '') {
 
 if (empty($errors)) {
   $sql = "insert into plans (title, due_date, created_at,   updated_at) values (:title,  :due_date, now(), now())";
-$stmt = $dbh->prepare($sql);
-$stmt->bindParam(":title", $title);
-$stmt->bindParam(":due_date", $due_date);
-$stmt->execute();
+  $stmt = $dbh->prepare($sql);
+  $stmt->bindParam(":title", $title);
+  $stmt->bindParam(":due_date", $due_date);
+  $stmt->execute();
 
-header('Location: index.php');
-exit;
-}
+  header('Location: index.php');
+  exit;
+  }
 }
 
 ?>
@@ -71,7 +71,7 @@ exit;
             <li>
               <?php echo h($error); ?>
             </li>
-            <?php endforeach; ?>
+          <?php endforeach; ?>
         </ul>
       <?php endif; ?>
       </span>
@@ -87,11 +87,11 @@ exit;
       <?php else : ?>
         <li>
       <?php endif; ?>
-      <a href="done.php?id=<?php echo h($plan['id']) ;?>">[完了]</a>
-      <a href="edit.php?id=<?php echo h($plan['id']); ?>">[編集]</a>
-      <?php echo h($plan['title']); ?>
-      <?php echo '・・・完了期限:' .  h(date('Y/m/d', strtotime($plan['due_date']))); ?>
-    </li>
+          <a href="done.php?id=<?php echo h($plan['id']) ;?>">[完了]</a>
+          <a href="edit.php?id=<?php echo h($plan['id']); ?>">[編集]</a>
+          <?php echo h($plan['title']); ?>
+          <?php echo '・・・完了期限:' .  h(date('Y/m/d', strtotime($plan['due_date']))); ?>
+        </li>
     <?php endforeach; ?>
   </ul>
 
